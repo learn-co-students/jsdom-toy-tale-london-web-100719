@@ -88,6 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
       })
     };
 
-    fetch(url, updateToy).then((toyLikes.innerText = likes));
+    fetch(url, updateToy)
+      .then(res => res.json())
+      .then(json => (toyLikes.innerText = json.likes));
   }
 });
