@@ -38,6 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let toyBtn = document.createElement("btn");
     toyBtn.className = "like-btn";
     toyBtn.innerText = "Like 😍";
+    toyBtn.addEventListener("click", function() {
+      likeToy(toy.id, toyLikes);
+    });
 
     toyCard.append(toyName, toyImg, toyLikes, toyBtn);
     toyDiv.append(toyCard);
@@ -69,5 +72,22 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("http://localhost:3000/toys", newToy).then(buildToyCard(toyInfo));
   } // submitToy
 
-  function likeToy() {}
+  function likeToy(id, toyLikes) {
+    let url = `http://localhost:3000/toys/${id}`;
+    let likes = parseInt(toyLikes.innerText);
+    likes++;
+
+    let updateToy = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        likes: likes
+      })
+    };
+
+    fetch(url, updateToy).then((toyLikes.innerText = likes));
+  }
 });
