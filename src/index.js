@@ -6,24 +6,31 @@ document.addEventListener("DOMContentLoaded", ()=>{
   const toyFormName = document.querySelector('input[name="name"]');
   const toyFormImageUrl = document.querySelector('input[name="image"]');
   const toyFormMessage = document.querySelector('#form-message');
+  const toyCollection = document.querySelector("#toy-collection");
+
+  loadToys()
+
+  addBtn.addEventListener('click', handleFormToggle);
   toyForm.addEventListener('submit', submitFormAndRender);
-  addBtn.addEventListener('click', () => {
-    // hide & seek with the form
+
+  function loadToys() {
+    toys_url = "http://localhost:3000/toys"
+    fetch(toys_url).then(res => res.json())
+    .then(toys => {
+      appendToyItemToPage(toys)
+    })
+  }
+
+  function handleFormToggle() {
     addToy = !addToy
     if (addToy) {
       toyForm.style.display = 'block'
+      addBtn.textContent = "Don't add a new toy :("
     } else {
       toyForm.style.display = 'none'
+      addBtn.textContent = "Add a new toy!"
     }
-  })
-
-  const toyCollection = document.querySelector("#toy-collection");
-
-  toys_url = "http://localhost:3000/toys"
-  fetch(toys_url).then(res => res.json())
-  .then(toys => {
-    appendToyItemToPage(toys)
-  })
+  }
 
   function submitFormAndRender(event) {
     event.preventDefault();
@@ -54,8 +61,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
     .catch(error => {
         console.log(error);
     });
-
   }
+
 
   function appendToyItemToPage(toys){
     for (const toy in toys){
@@ -125,5 +132,5 @@ document.addEventListener("DOMContentLoaded", ()=>{
       likeCounter.textContent = `${toyData.likes} Likes`;
     }
   }
-  
+
 })
