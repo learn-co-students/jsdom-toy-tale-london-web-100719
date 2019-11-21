@@ -1,29 +1,42 @@
+const jsonify = response => response.json();
+const TOY_URL = "http://localhost:3000/toys";
+
 document.addEventListener("DOMContentLoaded", () => {
-  const addBtn = document.querySelector("#new-toy-btn");
-  const toyForm = document.querySelector(".container");
+  const newToyBtn = document.querySelector("#new-toy-btn");
+  const toyFormContainer = document.querySelector(".container");
+  const toyForm = document.querySelector("form");
+  toyForm.addEventListener("submit", submitToy);
   const toyDiv = document.querySelector("#toy-collection");
+
+  // New Toy Form
   let addToy = false;
 
-  addBtn.addEventListener("click", () => {
-    // hide & seek with the form
-    addToy = !addToy;
-    if (addToy) {
-      toyForm.style.display = "block";
-    } else {
-      toyForm.style.display = "none";
-    }
-  });
+  newToyBtn.addEventListener("click", newToyFormToggle);
 
-  fetch("http://localhost:3000/toys")
-    .then(res => res.json())
+  function newToyFormToggle() {
+    addToy = !addToy;
+    addToy
+      ? (toyFormContainer.style.display = "block")
+      : (toyFormContainer.style.display = "none");
+  }
+
+  // Display Current Toys
+  fetch(TOY_URL)
+    .then(jsonify)
     .then(json => {
       json.forEach(toy => buildToyCard(toy));
     });
 
-  // come back and clean?
+  // 'Builds' Toy Cards
   function buildToyCard(toy) {
     let toyCard = document.createElement("div");
     toyCard.className = "card";
+
+    let toyDel = document.createElement("p");
+    toyDel.innerText = "❌";
+    toyDel.addEventListener("click", () => {
+      deleteToy(toy.id);
+    });
 
     let toyName = document.createElement("h2");
     toyName.innerText = toy.name;
@@ -35,28 +48,23 @@ document.addEventListener("DOMContentLoaded", () => {
     let toyLikes = document.createElement("p");
     toyLikes.innerText = toy.likes;
 
-    let toyBtn = document.createElement("btn");
+    let toyBtn = document.createElement("button");
     toyBtn.className = "like-btn";
     toyBtn.innerText = "Like 😍";
-    toyBtn.addEventListener("click", function() {
+    toyBtn.addEventListener("click", () => {
       likeToy(toy.id, toyLikes);
     });
 
-    toyCard.append(toyName, toyImg, toyLikes, toyBtn);
+    toyCard.append(toyDel, toyName, toyImg, toyLikes, toyBtn);
     toyDiv.append(toyCard);
   } // buildToyCard
-
-  const toyFormBtn = document.querySelector(".submit");
-  toyFormBtn.addEventListener("click", submitToy);
 
   function submitToy(event) {
     event.preventDefault(); // prevent page reload from form submission
 
-    let toyFormName = document.querySelector("input[name=name]").value;
-    let toyFormImg = document.querySelector("input[name=image]").value;
     let toyInfo = {
-      name: toyFormName,
-      image: toyFormImg,
+      name: toyForm.name.value,
+      image: toyForm.image.value,
       likes: 0
     };
 
@@ -69,11 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
       body: JSON.stringify(toyInfo)
     };
 
-    fetch("http://localhost:3000/toys", newToy).then(buildToyCard(toyInfo));
+    fetch(TOY_URL, newToy).then(buildToyCard(toyInfo));
   } // submitToy
 
   function likeToy(id, toyLikes) {
-    let url = `http://localhost:3000/toys/${id}`;
+    let url = TOY_URL + `/${id}`;
     let likes = parseInt(toyLikes.innerText);
     likes++;
 
@@ -89,7 +97,17 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     fetch(url, updateToy)
-      .then(res => res.json())
+      .then(jsonify)
       .then(json => (toyLikes.innerText = json.likes));
+  }
+
+  function deleteToy(id) {
+    let url = TOY_URL + `/${id}`;
+    let delToy = {
+      method: "DELETE"
+    };
+    fetch(url, delToy)
+      .then(jsonify)
+      .then(event.target.parentNode.remove());
   }
 });
