@@ -30,42 +30,41 @@ document.addEventListener("DOMContentLoaded", ()=>{
   })
 
   // functions to run
-  loadToys();
+  getToys().then(function(toys) {
+    toys.forEach(function(character){
+      renderToy(character);
+    })
+  })
 
-  // fetch object and render characters
-  function loadToys() {
+  // fetch object containing toy information
+  function getToys() {
     return fetch(TOYS_API)
       .then(function(response){
         return response.json();
       })
-      .then(function(toysJson){
-        renderToys(toysJson);
-      })
   }
 
   // render characters
-  function renderToys(toysJson) {
-    toysJson.forEach(function(character) {
-      let toyName = document.createElement("h2");
-      toyName.innerText = character.name;
+  function renderToy(character) {
+    let toyName = document.createElement("h2");
+    toyName.innerText = character.name;
 
-      let toyImg = document.createElement("img");
-      toyImg.setAttribute("class", "toy-avatar");
-      toyImg.src = character.image;
+    let toyImg = document.createElement("img");
+    toyImg.setAttribute("class", "toy-avatar");
+    toyImg.src = character.image;
 
-      let toyLikes = document.createElement("p");
-      toyLikes.innerText = `${character.likes} Like(s)`;
+    let toyLikes = document.createElement("p");
+    toyLikes.innerText = `${character.likes} Like(s)`;
 
-      let likeBtn = document.createElement("button");
-      likeBtn.setAttribute("class", "like-btn");
-      likeBtn.innerText = "Like ♡";
+    let likeBtn = document.createElement("button");
+    likeBtn.setAttribute("class", "like-btn");
+    likeBtn.innerText = "Like ♡";
 
-      let toyDiv = document.createElement("div");
-      toyDiv.setAttribute("class", "card");
-      toyDiv.append(toyName, toyImg, toyLikes, likeBtn)
-      
-      toyCollection.append(toyDiv);
-    })
+    let toyDiv = document.createElement("div");
+    toyDiv.setAttribute("class", "card");
+    toyDiv.append(toyName, toyImg, toyLikes, likeBtn)
+    
+    toyCollection.append(toyDiv);
   }
 
   // post new toy character
@@ -88,8 +87,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
       .then(function(response) {
         return response.json();
       })
-      .then(function(toy) {
-        renderToys(toy);
+      .then(function(character) {
+        renderToy(character);
       })
   }
 
