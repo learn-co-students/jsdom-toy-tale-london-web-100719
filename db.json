@@ -47,6 +47,42 @@
       "name": "Little Green Men",
       "image": "http://www.pngmart.com/files/3/Toy-Story-Alien-PNG-File.png",
       "likes": -2
+    },
+    {
+      "name": "Beige Bunny",
+      "image": "https://www.jellycat.com/images/products/large/BAS3B.jpg",
+      "likes": 0,
+      "id": 9
+    },
+    {
+      "name": "Biscuit Bunny",
+      "image": "https://www.jellycat.com/images/products/large/BAS3BIS.jpg",
+      "likes": 0,
+      "id": 10
+    },
+    {
+      "name": "Saffron Bunny",
+      "image": "https://www.jellycat.com/images/products/large/BAS3SF.jpg",
+      "likes": 0,
+      "id": 11
+    },
+    {
+      "name": "Smudge Elephant",
+      "image": "https://www.jellycat.com/images/products/large/SMG2EL.jpg",
+      "likes": 0,
+      "id": 12
+    },
+    {
+      "name": "Mimzy Kenan",
+      "image": "https://www.jellycat.com/images/products/large/BAS3SD.jpg",
+      "likes": 0,
+      "id": 13
+    },
+    {
+      "name": "Blush Bunny",
+      "image": "https://www.jellycat.com/images/products/large/BAS3BLU.jpg",
+      "likes": 0,
+      "id": 14
     }
   ]
 }
