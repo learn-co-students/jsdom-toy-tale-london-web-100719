@@ -1,24 +1,31 @@
-let addToy = false
-
 document.addEventListener("DOMContentLoaded", ()=>{
-
-  // declare variables
+  
+  // variables
   const addBtn = document.querySelector('#new-toy-btn');
   const toyForm = document.querySelector('.container');
-  const toyCollection = document.querySelector('#toy-collection');
+  let addToy = false
+  let toyCollection = document.querySelector('#toy-collection');
 
   // URLs
   const API_ENDPOINT = "http://localhost:3000";
   const TOYS_API = `${API_ENDPOINT}/toys`;
 
-  // 
+  // hide or reveal form for creating a new toy
   addBtn.addEventListener('click', () => {
-    // hide & seek with the form
     addToy = !addToy
     if (addToy) {
-      toyForm.style.display = 'block'
+      toyForm.style.display = 'block';
+      addBtn.innerHTML = "Hide form";
+      
+      // handle adding toy when button is clicked
+      toyForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        postToyData(event.target);
+      })
+
     } else {
-      toyForm.style.display = 'none'
+      toyForm.style.display = 'none';
+      addBtn.innerHTML = "Add a new toy!";
     }
   })
 
@@ -39,31 +46,51 @@ document.addEventListener("DOMContentLoaded", ()=>{
   // render characters
   function renderToys(toysJson) {
     toysJson.forEach(function(character) {
-      let toyDiv = document.createElement("div");
       let toyName = document.createElement("h2");
-      let toyImg = document.createElement("img");
-      let toyLikes = document.createElement("p");
-      let likeBtn = document.createElement("button");
-      
-      toyDiv.setAttribute("class", "card");
-      toyImg.setAttribute("class", "toy-avatar");
-      likeBtn.setAttribute("class", "like-btn");
-
       toyName.innerText = character.name;
+
+      let toyImg = document.createElement("img");
+      toyImg.setAttribute("class", "toy-avatar");
       toyImg.src = character.image;
+
+      let toyLikes = document.createElement("p");
       toyLikes.innerText = `${character.likes} Like(s)`;
+
+      let likeBtn = document.createElement("button");
+      likeBtn.setAttribute("class", "like-btn");
       likeBtn.innerText = "Like ♡";
+
+      let toyDiv = document.createElement("div");
+      toyDiv.setAttribute("class", "card");
+      toyDiv.append(toyName, toyImg, toyLikes, likeBtn)
       
-      toyDiv.appendChild(toyName);
-      toyDiv.appendChild(toyImg);
-      toyDiv.appendChild(toyLikes);
-      toyDiv.appendChild(likeBtn);
-      toyCollection.appendChild(toyDiv);
+      toyCollection.append(toyDiv);
     })
   }
 
+  // post new toy character
+  function postToyData(formData) {
 
+    let configObj = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        "name": formData.name.value,
+        "image": formData.image.value,
+        "likes": 0
+      })
+    }
 
-
+    return fetch(TOYS_API, configObj)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(toy) {
+        renderToys(toy);
+      })
+  }
 
 })
