@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
       })
   }
 
-  // render characters
+  // render character
   function renderToy(character) {
     let toyName = document.createElement("h2");
     toyName.innerText = character.name;
@@ -58,7 +58,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
     let likeBtn = document.createElement("button");
     likeBtn.setAttribute("class", "like-btn");
+    likeBtn.setAttribute("id", `${character.id}`);
     likeBtn.innerText = "Like ♡";
+
+    likeBtn.addEventListener('click', function(event) {
+      handleLikes(event);
+    })
 
     let toyDiv = document.createElement("div");
     toyDiv.setAttribute("class", "card");
@@ -89,6 +94,32 @@ document.addEventListener("DOMContentLoaded", ()=>{
       })
       .then(function(character) {
         renderToy(character);
+      })
+  }
+
+  // post new likes
+  function handleLikes(event) {
+    event.preventDefault();
+
+    let newLikeNum = parseInt(event.target.previousElementSibling.innerText) + 1;
+  
+    let configObj = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        "likes": newLikeNum
+      })
+    }
+
+    fetch(`${API_ENDPOINT}/toys/${event.target.id}`, configObj)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function() {
+        event.target.previousElementSibling.innerText = `${newLikeNum} Like(s)`;
       })
   }
 
